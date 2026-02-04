@@ -17,7 +17,7 @@ export class TaskOrmEntity {
   @Column()
   title: string;
 
-  @Column('text')
+  @Column()
   description: string;
 
   @Column({ default: false })
@@ -26,13 +26,13 @@ export class TaskOrmEntity {
   @Column({ type: 'date' })
   dueDate: Date;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ nullable: true })
   comments?: string;
 
   @Column({ nullable: true })
   responsible?: string;
 
-  @Column({ type: 'simple-array', nullable: true })
+  @Column('simple-array', { nullable: true })
   tags?: string[];
 
   @CreateDateColumn()
