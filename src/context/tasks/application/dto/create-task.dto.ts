@@ -22,6 +22,9 @@ export class CreateTaskDto {
   @IsDateString()
   dueDate: string;
 
+  @IsBoolean()
+  isPublic: boolean;
+
   @IsOptional()
   @IsString()
   comments?: string;

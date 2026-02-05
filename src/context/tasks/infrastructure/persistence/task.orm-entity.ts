@@ -26,7 +26,10 @@ export class TaskOrmEntity {
   @Column({ type: 'date' })
   dueDate: Date;
 
-  @Column({ nullable: true })
+  @Column({ default: false })
+  isPublic: boolean;
+
+  @Column({ nullable: true, type: 'text' })
   comments?: string;
 
   @Column({ nullable: true })
@@ -34,6 +37,18 @@ export class TaskOrmEntity {
 
   @Column('simple-array', { nullable: true })
   tags?: string[];
+
+  @Column({ nullable: true })
+  filePath?: string;
+
+  @Column({ nullable: true })
+  fileName?: string;
+
+  @Column({ nullable: true })
+  fileSize?: number;
+
+  @Column({ nullable: true })
+  fileMimeType?: string;
 
   @CreateDateColumn()
   createdAt: Date;
