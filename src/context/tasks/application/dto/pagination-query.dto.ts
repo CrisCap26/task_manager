@@ -5,7 +5,6 @@ import {
   Min,
   Max,
   IsIn,
-  IsBoolean,
   IsDateString,
   IsString,
 } from 'class-validator';
@@ -34,9 +33,8 @@ export class PaginationQueryDto {
   sortOrder?: 'ASC' | 'DESC' = 'DESC';
 
   @IsOptional()
-  @IsBoolean()
-  @Type(() => Boolean)
-  completed?: boolean;
+  @IsString()
+  completed?: string; // 'true' o 'false' como string
 
   @IsOptional()
   @IsDateString()
@@ -55,9 +53,8 @@ export class PaginationQueryDto {
   tags?: string;
 
   @IsOptional()
-  @IsBoolean()
-  @Type(() => Boolean)
-  isPublic?: boolean;
+  @IsString()
+  isPublic?: string; // 'true' o 'false' como string
 
   @IsOptional()
   @IsString()

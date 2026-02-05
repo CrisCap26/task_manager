@@ -23,6 +23,7 @@ export class TaskTypeOrmRepository implements TaskRepository {
       sortBy = 'createdAt',
       sortOrder = 'DESC',
       completed,
+      isPublic,
       dueDateFrom,
       dueDateTo,
       responsible,
@@ -31,30 +32,54 @@ export class TaskTypeOrmRepository implements TaskRepository {
     } = paginationQuery;
     const skip = (page - 1) * limit;
 
+    // Convert string boolean to actual boolean
+    const completedBool =
+      completed === 'true' ? true : completed === 'false' ? false : undefined;
+    const isPublicBool =
+      isPublic === 'true' ? true : isPublic === 'false' ? false : undefined;
+
     const queryBuilder = this.repository
       .createQueryBuilder('task')
       .where('task.userId = :userId', { userId });
 
-    if (completed !== undefined) {
-      queryBuilder.andWhere('task.completed = :completed', { completed });
+    if (completedBool !== undefined) {
+      queryBuilder.andWhere('task.completed = :completed', {
+        completed: completedBool,
+      });
+    }
+
+    if (isPublicBool !== undefined) {
+      queryBuilder.andWhere('task.isPublic = :isPublic', {
+        isPublic: isPublicBool,
+      });
     }
 
     if (dueDateFrom) {
-      queryBuilder.andWhere('task.dueDate >= :dueDateFrom', { dueDateFrom });
+      queryBuilder.andWhere('DATE(task.dueDate) >= DATE(:dueDateFrom)', {
+        dueDateFrom,
+      });
     }
 
     if (dueDateTo) {
-      queryBuilder.andWhere('task.dueDate <= :dueDateTo', { dueDateTo });
+      queryBuilder.andWhere('DATE(task.dueDate) <= DATE(:dueDateTo)', {
+        dueDateTo,
+      });
     }
 
     if (responsible) {
-      queryBuilder.andWhere('task.responsible = :responsible', { responsible });
+      queryBuilder.andWhere(
+        'LOWER(task.responsible) LIKE LOWER(:responsible)',
+        {
+          responsible: `%${responsible}%`,
+        },
+      );
     }
 
     if (tags) {
       const tagList = tags.split(',').map((t) => t.trim());
+      // Use LIKE with comma-separated format for simple-array
       queryBuilder.andWhere('task.tags LIKE :tags', {
-        tags: `%${tagList[0]}%`,
+        tags: `%,${tagList[0]},%`,
       });
     }
 
@@ -86,6 +111,7 @@ export class TaskTypeOrmRepository implements TaskRepository {
       sortBy = 'createdAt',
       sortOrder = 'DESC',
       completed,
+      isPublic,
       dueDateFrom,
       dueDateTo,
       responsible,
@@ -94,30 +120,54 @@ export class TaskTypeOrmRepository implements TaskRepository {
     } = paginationQuery;
     const skip = (page - 1) * limit;
 
+    // Convert string boolean to actual boolean
+    const completedBool =
+      completed === 'true' ? true : completed === 'false' ? false : undefined;
+    const isPublicBool =
+      isPublic === 'true' ? true : isPublic === 'false' ? false : undefined;
+
     const queryBuilder = this.repository
       .createQueryBuilder('task')
       .where('task.isPublic = :isPublic', { isPublic: true });
 
-    if (completed !== undefined) {
-      queryBuilder.andWhere('task.completed = :completed', { completed });
+    if (completedBool !== undefined) {
+      queryBuilder.andWhere('task.completed = :completed', {
+        completed: completedBool,
+      });
+    }
+
+    if (isPublicBool !== undefined) {
+      queryBuilder.andWhere('task.isPublic = :isPublicFilter', {
+        isPublicFilter: isPublicBool,
+      });
     }
 
     if (dueDateFrom) {
-      queryBuilder.andWhere('task.dueDate >= :dueDateFrom', { dueDateFrom });
+      queryBuilder.andWhere('DATE(task.dueDate) >= DATE(:dueDateFrom)', {
+        dueDateFrom,
+      });
     }
 
     if (dueDateTo) {
-      queryBuilder.andWhere('task.dueDate <= :dueDateTo', { dueDateTo });
+      queryBuilder.andWhere('DATE(task.dueDate) <= DATE(:dueDateTo)', {
+        dueDateTo,
+      });
     }
 
     if (responsible) {
-      queryBuilder.andWhere('task.responsible = :responsible', { responsible });
+      queryBuilder.andWhere(
+        'LOWER(task.responsible) LIKE LOWER(:responsible)',
+        {
+          responsible: `%${responsible}%`,
+        },
+      );
     }
 
     if (tags) {
       const tagList = tags.split(',').map((t) => t.trim());
+      // Use LIKE with comma-separated format for simple-array
       queryBuilder.andWhere('task.tags LIKE :tags', {
-        tags: `%${tagList[0]}%`,
+        tags: `%,${tagList[0]},%`,
       });
     }
 
