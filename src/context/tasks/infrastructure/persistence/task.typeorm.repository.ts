@@ -77,10 +77,17 @@ export class TaskTypeOrmRepository implements TaskRepository {
 
     if (tags) {
       const tagList = tags.split(',').map((t) => t.trim());
-      // Use LIKE with comma-separated format for simple-array
-      queryBuilder.andWhere('task.tags LIKE :tags', {
-        tags: `%,${tagList[0]},%`,
-      });
+      const tag = tagList[0].toLowerCase();
+      // Handle simple-array format which stores tags as: tag1,tag2,tag3
+      queryBuilder.andWhere(
+        '(LOWER(task.tags) = :tagExact OR LOWER(task.tags) LIKE :tagStart OR LOWER(task.tags) LIKE :tagEnd OR LOWER(task.tags) LIKE :tagMiddle)',
+        {
+          tagExact: tag,
+          tagStart: `${tag},%`,
+          tagEnd: `%,${tag}`,
+          tagMiddle: `%,${tag},%`,
+        },
+      );
     }
 
     if (search) {
@@ -165,10 +172,17 @@ export class TaskTypeOrmRepository implements TaskRepository {
 
     if (tags) {
       const tagList = tags.split(',').map((t) => t.trim());
-      // Use LIKE with comma-separated format for simple-array
-      queryBuilder.andWhere('task.tags LIKE :tags', {
-        tags: `%,${tagList[0]},%`,
-      });
+      const tag = tagList[0].toLowerCase();
+      // Handle simple-array format which stores tags as: tag1,tag2,tag3
+      queryBuilder.andWhere(
+        '(LOWER(task.tags) = :tagExact OR LOWER(task.tags) LIKE :tagStart OR LOWER(task.tags) LIKE :tagEnd OR LOWER(task.tags) LIKE :tagMiddle)',
+        {
+          tagExact: tag,
+          tagStart: `${tag},%`,
+          tagEnd: `%,${tag}`,
+          tagMiddle: `%,${tag},%`,
+        },
+      );
     }
 
     if (search) {
