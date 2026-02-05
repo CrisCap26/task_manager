@@ -36,11 +36,21 @@ const pgUrl = parsePostgresUrl(
   process.env.DATABASE_URL || process.env.POSTGRES_URL,
 );
 
+// Determinar el tipo de base de datos
+const dbType =
+  (process.env.DB_TYPE as 'mysql' | 'postgres') ||
+  (pgUrl ? 'postgres' : 'mysql');
+
 export const databaseConfig: TypeOrmModuleOptions = {
-  type: 'postgres',
+  type: dbType as 'mysql' | 'postgres',
   host: pgUrl?.host || process.env.DATABASE_HOST || 'localhost',
-  port: pgUrl?.port || parseInt(process.env.DATABASE_PORT || '5432', 10),
-  username: pgUrl?.username || process.env.DATABASE_USER || 'postgres',
+  port:
+    pgUrl?.port ||
+    parseInt(
+      process.env.DATABASE_PORT || (dbType === 'postgres' ? '5432' : '3306'),
+      10,
+    ),
+  username: pgUrl?.username || process.env.DATABASE_USER || 'root',
   password: pgUrl?.password || process.env.DATABASE_PASSWORD || '',
   database: pgUrl?.database || process.env.DATABASE_NAME || 'task_manager',
   autoLoadEntities: true,
@@ -50,4 +60,12 @@ export const databaseConfig: TypeOrmModuleOptions = {
     process.env.DATABASE_SSL === 'true' || process.env.NODE_ENV === 'production'
       ? { rejectUnauthorized: false }
       : false,
+  // Para MySQL local
+  extra:
+    dbType === 'mysql'
+      ? {
+          supportBigNumbers: true,
+          bigNumberStrings: false,
+        }
+      : undefined,
 };
