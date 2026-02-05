@@ -1,6 +1,4 @@
-# Datos de Prueba para Insomnia
-
-## Configuración en Insomnia
+# Datos de Prueba
 
 ### Headers requeridos para todas las peticiones:
 
@@ -206,8 +204,6 @@ DELETE http://localhost:3000/tasks/1
 ```
 
 ---
-
-## Después de crear las 10 tareas, prueba estos filtros:
 
 ### Filtrar por completadas
 
