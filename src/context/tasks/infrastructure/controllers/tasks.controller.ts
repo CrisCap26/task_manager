@@ -23,7 +23,7 @@ import { UserId } from 'src/common/decorators/user-id.decorator';
 import { FileValidatorPipe } from 'src/common/pipes/file-validator.pipe';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 @Controller('tasks')
 export class TaskController {
@@ -76,7 +76,7 @@ export class TaskController {
       storage: diskStorage({
         destination: './uploads/tasks',
         filename: (req, file, callback) => {
-          const uniqueSuffix = uuidv4();
+          const uniqueSuffix = randomUUID();
           callback(null, `${uniqueSuffix}${extname(file.originalname)}`);
         },
       }),
